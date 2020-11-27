@@ -47,15 +47,15 @@ apt install -y openssh-client openssh-server openssh-sftp-server
 apt install -y ntp libdw-dev libserial-dev can-utils
 
 echo "remove iot edge"
-apt-get remove --purge iotedge
-apt-get remove --purge moby-cli
-apt-get remove --purge moby-engine
+apt-get remove --purge -y iotedge
+apt-get remove --purge -y moby-cli
+apt-get remove --purge -y moby-engine
 
 echo "remove old docker versions"
-apt-get remove docker docker-engine docker.io containerd runc
+apt-get remove -y docker docker-engine docker.io containerd runc
 
 echo "install docker"
-apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
 add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/debian \
@@ -63,7 +63,7 @@ add-apt-repository \
    stable"
 
 apt-get update
-apt-get install docker-ce docker-ce-cli containerd.io
+apt-get install -y docker-ce docker-ce-cli containerd.io
 curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
@@ -93,3 +93,53 @@ echo "Set passwords for root and husarion"
 echo 'root:password' | chpasswd
 echo 'husarion:husarion' | chpasswd
 echo 'husarion' >/etc/hostname
+
+
+sudo apt update && sudo apt upgrade -y
+curl -sSL https://get.docker.com | sh
+sudo apt install -y libffi-dev libssl-dev python3 python3-pip python3-setuptools
+sudo apt remove -y python-configparser
+sudo pip3 install -y docker-compose
+
+
+echo "Setting time server"
+echo "restrict 10.15.20.0 mask 255.255.255.0 nomodify notrap
+server 127.127.1.0 prefer
+fudge 127.127.1.0 stratum 6
+driftfile /var/lib/ntp/ntp.drift
+restrict default nomodify notrust
+restrict 127.0.0.0/8
+disable auth
+logfile /var/log/ntp.log" >>/etc/ntp.conf
+
+
+echo "
+export ROS_MASTER_URI=http://10.15.20.3:11311
+export ROS_IP=10.15.20.3
+export ROS_IPV6=off
+export ROBOT_VER=PANTHER_DOCKER" >>/home/husarion/.bashrc
+
+
+
+echo '127.0.0.1	localhost master husarion
+
+The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback master husarion
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters' >/etc/hosts
+
+
+export ROS_MASTER_URI=http://10.15.20.3:11311
+export ROS_IP=10.15.20.3
+
+chsh -s /bin/bash husarion
+
+. /home/husarion/.bashrc
+
+# To run use following commands (in readme): 
+#docker pull khasreto/panther_system_ros1:latest
+#docker run  --net=host -e ROS_MASTER_URI -e ROS_IP -it -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev:/dev --privileged --name panther_system_ros1 khasreto/panther_system_ros1:latest ./upstart.bash
+
+

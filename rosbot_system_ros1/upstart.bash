@@ -1,5 +1,5 @@
 #!/bin/bash
 
-. env.bash
+echo "test"
 
 # ros launch file

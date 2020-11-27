@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "To re-run use command docker run -i rap"
+echo "To re-run use command docker start -i rap"
 
 xhost +local:root
 

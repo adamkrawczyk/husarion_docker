@@ -18,19 +18,15 @@ RUN apt-key add pubkey.gpg
 
 RUN echo 'deb https://install.husarnet.com/deb/ all husarnet' >/etc/apt/sources.list.d/husarnet.list
 RUN curl https://install.husarnet.com/key.asc | apt-key add -
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg --output pubkey.gpg
+RUN apt-key add pubkey.gpg
+
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list
 RUN curl -sL https://deb.nodesource.com/setup_12.x --output setup.sh
 RUN chmod a+x setup.sh
 RUN ./setup.sh
-RUN apt-get install -y -qq nodejs
-RUN apt-get install -y -qq python3-pip
-RUN apt-get install -y -qq openssl
-RUN apt-get install -y -qq libserial-dev
-RUN apt-get install -y -qq yarn
-RUN apt-get install -y -qq net-tools
-RUN apt-get install -y -qq xdg-utils 
-RUN apt-get install -y -qq wget 
-RUN apt-get install -y -qq libxtst6 
+RUN apt install -y nodejs
 RUN apt-get install -y -qq libappindicator3-1
 RUN apt-get install -y -qq git
 
@@ -39,12 +35,8 @@ RUN apt-get install -y -qq ros-noetic-joint-state-controller ros-noetic-effort-c
 RUN apt install -y python3-argcomplete ros-noetic-slam-toolbox ros-noetic-teb-local-planner ros-noetic-move-base ros-noetic-teleop-twist-keyboard ros-noetic-robot-localization ros-noetic-ddynamic-reconfigure ros-noetic-behaviortree-cpp-v3 ros-noetic-ddynamic-reconfigure ros-noetic-rgbd-launch
 RUN apt install ros-noetic-global-planner
 
-
-
 # Add Intel display support by installing Mesa libraries
 RUN apt-get install -y -qq libgl1-mesa-glx libgl1-mesa-dri 
-
-
 
 RUN useradd --create-home husarion
 RUN mkdir -p /home/husarion
@@ -68,13 +60,10 @@ RUN mkdir -p /home/husarion/husarion_ws/src
 
 WORKDIR /home/husarion/husarion_ws/src/
 # ROS workspace
-RUN git clone https://github.com/GT-RAIL/async_web_server_cpp.git
 RUN git clone https://github.com/husarion/husarion_ros.git
 RUN git clone https://github.com/husarion/route_admin_panel.git
 RUN git clone https://github.com/husarion/panther_description.git
 RUN git clone https://github.com/Slamtec/rplidar_ros.git
-RUN git clone https://github.com/RobotWebTools/web_video_server.git
-
 
 WORKDIR /home/husarion/husarion_ws
 RUN rosdep update
@@ -92,9 +81,11 @@ RUN npm install
 WORKDIR /home/husarion/husarion_ws
 RUN . /opt/ros/noetic/setup.sh && catkin_make
 
-
 # install custom launchfile
 ADD upstart.bash /home/husarion/
-ADD env.bash /home/husarion/
+ADD husarion_env.sh /home/husarion/
 
 WORKDIR /home/husarion
+
+ENTRYPOINT ["/home/husarion/husarion_env.sh"]
+CMD ["bash"]
