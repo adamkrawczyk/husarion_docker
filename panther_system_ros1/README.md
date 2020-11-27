@@ -18,7 +18,13 @@
     - Execute file `./set_vizi-ai.sh` - This will create user husarion with password husarion set your environment and also download container.
 3. When not using script download image `
 
-4. If you want to autostart:
+4. Run image 
+
+```
+docker run  --net=host -e ROS_MASTER_URI -e ROS_IP -it -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev:/dev --privileged --name panther_system_ros1 khasreto/panther_system_ros1:latest
+```
+
+5. If you want to autostart:
 ```
 touch /etc/systemd/system/docker-panther-system.service
 ```
