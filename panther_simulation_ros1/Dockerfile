@@ -30,6 +30,7 @@ RUN apt-get install -y -qq net-tools
 RUN apt-get install -y -qq ros-noetic-joint-state-controller
 RUN apt-get install -y -qq ros-noetic-effort-controllers
 RUN apt-get install -y -qq ros-noetic-position-controllers
+RUN apt-get install -y -qq ros-noetic-slam-toolbox
 RUN apt-get install -y -qq ros-noetic-gmapping
 RUN apt-get install -y -qq xdg-utils 
 RUN apt-get install -y -qq wget 
@@ -62,7 +63,7 @@ RUN mkdir -p /home/husarion/ros_ws/src
 
 WORKDIR /home/husarion/ros_ws/src/
 RUN git clone https://github.com/husarion/husarion_ros.git
-RUN git clone https://github.com/husarion/route_admin_panel.git
+RUN git clone -b panther_dev https://github.com/husarion/route_admin_panel.git
 RUN git clone https://github.com/husarion/panther_description.git
 
 
