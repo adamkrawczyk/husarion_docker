@@ -30,13 +30,14 @@ RUN apt-get install -y -qq net-tools
 RUN apt-get install -y -qq ros-noetic-joint-state-controller
 RUN apt-get install -y -qq ros-noetic-effort-controllers
 RUN apt-get install -y -qq ros-noetic-position-controllers
+RUN apt-get install -y -qq ros-noetic-slam-toolbox
 RUN apt-get install -y -qq ros-noetic-gmapping
+RUN apt-get install -y -qq ros-noetic-teb-local-planner
 RUN apt-get install -y -qq xdg-utils 
 RUN apt-get install -y -qq wget 
 RUN apt-get install -y -qq libxtst6 
 RUN apt-get install -y -qq libappindicator3-1
 RUN apt-get install -y -qq git
-
 
 # Add Intel display support by installing Mesa libraries
 RUN apt-get install -y -qq libgl1-mesa-glx libgl1-mesa-dri 
